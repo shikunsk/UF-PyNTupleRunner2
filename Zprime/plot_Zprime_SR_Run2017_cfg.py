@@ -6,7 +6,7 @@ from Utils.System import system
 
 from Zprime.Dataset.Run2017.SkimTree_Bkg_m4l70 import * 
 #from Zprime.Dataset.Run2017.SkimTree_promptCR_Bkg_m4l70 import *
-from Zprime.Dataset.Run2017.SkimTree_Zprime_m4l70 import * 
+from Zprime.Dataset.Run2016.SkimTree_Zprime_m4l70 import * 
 from Zprime.Sequence.RecoSequence import * 
 from Zprime.Config.PlotDefinition import *
 
@@ -41,10 +41,16 @@ User                    = os.environ['USER']
 #out_path                = "DataMCDistributions/Run2017/2020-09-21_12Gev_BkgRatio_skimmed_nocut/"
 #out_path                = "DataMCDistributions/Run2017/2020-09-23_4Gev_SR/"
 #out_path                = "DataMCDistributions/Run2017/2020-09-23_4Gev_CR/"
-out_path                = "DataMCDistributions/Run2017/2020-10-14_4Gev_signalcount_mZ2/"
+#out_path                = "DataMCDistributions/Run2017/2020-10-14_4Gev_signalcount_mZ2/"
+#out_path                = "DataMCDistributions/Run2017/2020-10-28_4Gev_signalcount_mZ2/"
+#out_path                = "DataMCDistributions/Run2017/Dissertation_2021-09-15_4Gev_CR/"
+#out_path                = "DataMCDistributions/Run2017/Dissertation_2021-09-15_4Gev_SR/"
+#out_path                = "DataMCDistributions/Run2017/Dissertation_ULdata_2022-03-06_4Gev_SR/"
+#out_path                = "DataMCDistributions/Run2017/Dissertation_ULdata_2022-03-23_4Gev_SR/"
+out_path                = "DataMCDistributions/Run2017/Dissertation_ULdata_2022-03-23_4Gev_CR/"
 
 lumi                    = 41.4
-nCores                  = 5
+nCores                  = 8
 outputDir               = system.getStoragePath()+"/Zprime/Zto4l/"+out_path
 nEvents                 = -1
 disableProgressBar      = False
@@ -52,7 +58,7 @@ disableProgressBar      = False
 #componentList           = bkgSamples + sigSampleDict.values()
 #componentList           = sigSampleDict.values()
 #componentList           = dataSamples + bkgSamples# + dataSamples
-componentList           = sigSamples#bkgSamples + dataSamples + sigSamples
+componentList           = sigSamples + bkgSamples + dataSamples# + sigSamples
 justEndSequence         = False
 
 plots = general_4mu_plots

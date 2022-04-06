@@ -6,6 +6,8 @@ from SampleColor import sampleColorDict
 
 from Core.Utils.printFunc import pyPrint
 
+import CMS_lumi as CMS_lumi
+
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 bkdgErrBarColor = 3004
@@ -46,7 +48,7 @@ class PlotEndModule(EndModule):
 
         dataCountErr = ROOT.Double(0.)
         dataCount = data.IntegralAndError(0,data.GetNbinsX()+1,dataCountErr)
-        self.shiftLastBin(data)
+        #self.shiftLastBin(data)
 
         if plot.plotSetting.divideByBinWidth:
             self.divideByBinWidth(data)
@@ -72,7 +74,7 @@ class PlotEndModule(EndModule):
         smCount      = 0.0
         smCountErrSq = 0.0
         histList     = []
-
+        """
         for isample,sample in enumerate(collector.mcSamples if not collector.mergeSamples else collector.mergeSamples):
             if not collector.mergeSamples and collector.sampleDict[sample].isSignal: continue
             if sample not in plot.customHistDict:
@@ -81,8 +83,9 @@ class PlotEndModule(EndModule):
                 h = plot.customHistDict[sample].hist
             smCountErrTmp = ROOT.Double(0.)
             smCount += h.IntegralAndError(0,h.GetNbinsX()+1,smCountErrTmp)
+            #smCountErrTmp = smCount * 0.1
             smCountErrSq += smCountErrTmp**2
-
+        """
         for isample,sample in enumerate(collector.mcSamples if not collector.mergeSamples else collector.mergeSamples):
             if not collector.mergeSamples and collector.sampleDict[sample].isSignal: continue
             if sample not in plot.customHistDict:
@@ -94,10 +97,11 @@ class PlotEndModule(EndModule):
                 h.SetFillColor(sampleColorDict[sample])
             else:
                 h.SetFillColor(ROOT.kViolet)
-            #smCountErrTmp = ROOT.Double(0.)
-            #smCount += h.IntegralAndError(0,h.GetNbinsX()+1,smCountErrTmp)
-            #smCountErrSq += smCountErrTmp**2
-            self.shiftLastBin(h)
+            smCountErrTmp = ROOT.Double(0.)
+            smCount += h.IntegralAndError(0,h.GetNbinsX()+1,smCountErrTmp)
+            #print(smCountErrTmp)
+            smCountErrSq += smCountErrTmp**2
+            #self.shiftLastBin(h)
             histList.append([h,sample if sample not in plot.plotSetting.leg_name_dict else plot.leg_nameplot.plotSetting.leg_name_dict[sample],h.Integral(0,h.GetNbinsX()+1),smCountErrTmp])
             if switch:
                 if not isample:
@@ -136,7 +140,7 @@ class PlotEndModule(EndModule):
             else:
                 h.SetFillColor(ROOT.kViolet)
             sigCount = h.Integral(0,h.GetNbinsX()+1)
-            self.shiftLastBin(h) 
+            #self.shiftLastBin(h) 
             h.SetLineStyle(9 if sample not in plot.plotSetting.line_style_dict else plot.plotSetting.line_style_dict[sample])
             h.SetLineWidth(5 if sample not in plot.plotSetting.line_width_dict else plot.plotSetting.line_width_dict[sample])
             if sample in plot.plotSetting.line_color_dict:
@@ -163,28 +167,31 @@ class PlotEndModule(EndModule):
         leg.SetTextSize(0.015)
         if dataCount != None:
             legLabel = "Data"
-            legLabel += ": {0}".format(int(dataCount))
+            #legLabel += ": {0}".format(int(dataCount))
             leg.AddEntry(data, legLabel , "p")
         # if not self._normToData and data:
             # if not self._normToData: leg.AddEntry(data, "Data: {0}".format(int(data.Integral(0,data.GetNbinsX()+1))), "p")
         legLabel = "Total"
+        
         if switch:
             legLabel += ": 100%"
-        else:
-            legLabel += ": "+str(math.ceil(smCount*10)/10)
-        if smCountErr:
-            legLabel += " #pm "+str(math.ceil(smCountErr*10)/10)
-
+        #else:
+            #legLabel += ": "+str(math.ceil(smCount*10)/10)
+        #if smCountErr:
+            #legLabel += " #pm "+str(math.ceil(smCountErr*10)/10)
+        
         if bkdgErr:
             leg.AddEntry(bkdgErr, legLabel, "fl")
 
         for hCount in reversed(histList):
             legLabel = hCount[1]
             error = hCount[3]
+            
             if switch:
                 legLabel += ": "+str(math.ceil(math.ceil(hCount[2]*10)/math.ceil(smCount*10)*100000)/1000)+"%"
-            else:
-                legLabel += ": "+str(math.ceil(hCount[2]*10)/10)+" #pm"+str(math.ceil(error*10)/10)
+            #else:
+                #legLabel += ": "+str(math.ceil(hCount[2]*10)/10)+" #pm"+str(math.ceil(error*10)/10)
+            
             leg.AddEntry(hCount[0], legLabel, "f")
 
         histListSignal.sort(key=lambda l: l[1], reverse=False)
@@ -203,8 +210,10 @@ class PlotEndModule(EndModule):
         else:
             return plot.key
 
-    def draw1DPlot(self,collector,plot,outputDir,switch):
+    def draw1DPlot(self,collector,plot,outputDir,switch):       
         c = ROOT.TCanvas("c_"+plot.key, "c_"+plot.key,0,0, 650, 750)
+
+        CMS_lumi.CMS_lumi(c,4,11)
 
         axisLabel = self.getAxisTitle(plot)
 
@@ -216,9 +225,11 @@ class PlotEndModule(EndModule):
 
         if collector.dataSamples:
             dataHist,dataCount,dataCountErr = self.stackData(collector,plot)
-
+            
         if collector.bkgSamples:
             histList,stack,smCount,smCountErrSq,total,bkdgErr = self.stackMC(collector,plot,switch,histToScale=dataHist if self.scaleToData else None)
+            
+            #smCountErrSq = smCountErrSq * 100
             stack.SetTitle("")
             if self.customSMCountFunc:
                 customSMCount = self.customSMCountFunc(collector,plot)
@@ -288,7 +299,7 @@ class PlotEndModule(EndModule):
                 # Draw CMS, lumi and preliminary if specified
                 #self.drawLabels(pSetPair[0].lumi)
                 bkdgErr.Draw("samee2")
-
+                
                 c.SaveAs(outputDir+plot.key+"_log.png")
                 c.SaveAs(outputDir+plot.key+"_log.pdf")
         elif collector.bkgSamples and collector.dataSamples:
@@ -296,6 +307,8 @@ class PlotEndModule(EndModule):
             ## TPad("name","title",xlow,ylow,xup,yup)
             upperPad = ROOT.TPad("upperPad", "upperPad", .001, 0.25, .995, .995)
             lowerPad = ROOT.TPad("lowerPad", "lowerPad", .001, .001, .995, .32)
+            #upperPad.SetLogx(1)
+            #lowerPad.SetLogx(1)
             upperPad.Draw()
             lowerPad.Draw()
 
@@ -333,9 +346,11 @@ class PlotEndModule(EndModule):
             upperPad.cd()
 
             leg = self.makeLegend(histList,bkdgErr,smCount,switch,data=dataHist,dataCount=dataCount,histListSignal=sigHistList,smCountErr=math.sqrt(smCountErrSq))
-
-            upperPad.SetLogy(0)
+            
+            upperPad.SetLogy(0) 
             stack.SetMaximum(maximum*plot.plotSetting.linear_max_factor)
+            #stack.SetMaximum(25.5) #changable yaxis
+            #dataHist.SetMaximum(25.5) #changeable yaxis
             dataHist.SetMaximum(maximum*plot.plotSetting.linear_max_factor)
 
             stack.Draw('hist')
@@ -358,10 +373,25 @@ class PlotEndModule(EndModule):
             n1 = ROOT.TLatex()
             n1.SetNDC()
             n1.SetTextFont(42)
-            n1.SetTextSize(0.05);
+            n1.SetTextSize(0.05)
+            latex = ROOT.TLatex()
+            latex.SetNDC()
+            latex.SetTextAngle(0)
+            latex.SetTextColor(ROOT.kBlack)    
+                         
+            extraTextSize = 0.57
+                              
+            latex.SetTextFont(42)
+            latex.SetTextAlign(31) 
+            latex.SetTextSize(0.05)
             if not self.skipSF:
-                n1.DrawLatex(0.11, 0.92, "Data/MC = %.2f #pm %.2f" % (scaleFactor,scaleFactorErr))
-
+                n1.DrawLatex(0.11, 0.92, "Data/MC = %.2f #pm %.2f           137 fb^{-1} (13TeV)" % (scaleFactor,scaleFactorErr))
+                latex.SetTextFont(61)
+                latex.SetTextSize(0.07)    
+                latex.DrawLatex(0.27,0.8,"CMS")
+                latex.SetTextFont(52)
+                latex.SetTextSize(0.053)
+                latex.DrawLatex(0.48,0.73,"Work in Progress")
             dataHist.DrawCopy('samep')
             bkdgErr.Draw("samee2")
 
@@ -381,11 +411,17 @@ class PlotEndModule(EndModule):
             # Draw CMS, lumi and preliminary if specified
             #self.drawLabels(pSetPair[0].lumi)
             bkdgErr.Draw("samee2")
-            n1.DrawLatex(0.11, 0.92, "Data/MC = %.2f #pm %.2f" % (scaleFactor,scaleFactorErr))
+            n1.DrawLatex(0.11, 0.92, "Data/MC = %.2f #pm %.2f           137 fb^{-1} (13TeV)" % (scaleFactor,scaleFactorErr))
+            latex.SetTextFont(61)
+            latex.SetTextSize(0.07)    
+            latex.DrawLatex(0.27,0.8,"CMS")
+            latex.SetTextFont(52)
+            latex.SetTextSize(0.053)
+            latex.DrawLatex(0.48,0.73,"Work in Progress")
 
             c.SaveAs(outputDir+plot.key+"_log.png")
             c.SaveAs(outputDir+plot.key+"_log.pdf")
-
+            
         elif collector.signalSamples and not collector.bkgSamples:
 
             sigHistList = self.makeSignalHist(collector,plot)
@@ -419,7 +455,6 @@ class PlotEndModule(EndModule):
 
 
     def draw2DPlot(self,collector,plot,outputDir):
-        c = ROOT.TCanvas("c_"+plot.key, "c_"+plot.key,0,0, 650, 650)
         for isample,sample in enumerate(collector.samples+collector.mergeSamples):
             hist = collector.getObj(sample,plot.rootSetting[1])
             hist.SetStats(0)

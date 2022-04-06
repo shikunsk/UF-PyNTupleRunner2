@@ -9,6 +9,7 @@ class Plotter(Module):
     def begin(self):
         for plot in self.plotList:
             self.writer.book(*plot.getWriterSetting())
+            self.writer.objs[plot.key].SetDefaultSumw2()
         self.plotList = [copy.deepcopy(plot) for plot in self.plotList]
         
     def analyze(self,event):
@@ -24,7 +25,7 @@ class Plotter(Module):
             if plot.dim == 1:
                 for value in values:
                     try:
-                        self.writer.objs[plot.key].Fill(value,eventWeight)
+                        self.writer.objs[plot.key].Fill(value,eventWeight) 
                     except TypeError:
                         raise RuntimeError, "Can't find "+plot.key+" in the tree"
             elif plot.dim == 2:

@@ -4,9 +4,8 @@ from Core.OutputInfo import OutputInfo
 from Core.Utils.LambdaFunc import LambdaFunc
 from Utils.System import system
 
-from Zprime.Dataset.Run2017.SkimTree_Bkg_m4l70 import * 
-#from Zprime.Dataset.Run2017.SkimTree_Zprime_m4l70 import * 
-from Zprime.Dataset.Run2016.SkimTree_Zprime_m4l70 import *
+from Zprime.Dataset.Run2016.SkimTree_Bkg_m4l70 import * 
+from Zprime.Dataset.Run2016.SkimTree_Zprime_m4l70 import * 
 from Zprime.Sequence.RecoSequence import * 
 
 from Zprime.StatTools.ParaYieldProducer import ParaYieldProducer
@@ -17,15 +16,15 @@ import os
 
 #out_path = "ParaInput/EXO-18-001-Nominal/2019-06-10/"
 #out_path = "ParaInput/Run2017/2020-06-25/"
-#out_path = "ParaInput/Run2017/2020-11-06/"
-#out_path = "ParaInput/Run2017/2020-11-23_coup0.05/"
-#out_path = "ParaInput/Run2017/2021-11-09/"
-out_path = "ParaInput/Run2017/2022-03-06_ULdata/"
+#out_path = "ParaInput/Run2016/2020-11-06/"
+#out_path = "ParaInput/Run2016/2020-11-23_coup0.05/"
+#out_path = "ParaInput/Run2016/2021-11-09/"
+out_path = "ParaInput/Run2016/2022-03-06_ULdata/"
 
 User                    = os.environ['USER']
 nCores                  = 5
 #lumi                    = 77.3
-lumi                    = 41.4
+lumi                    = 35.9
 outputDir               = system.getStoragePath()+"/Zprime/Zto4l/"+out_path
 nEvents                 = -1
 disableProgressBar      = False

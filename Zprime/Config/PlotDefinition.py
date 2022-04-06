@@ -1,22 +1,28 @@
 from Plotter.Plot import Plot
 from Core.Utils.LambdaFunc import LambdaFunc
+from array import array
 
 # ________________________________________________________________________ ||
-mZ1PlotRange        = [80,0.,120.]
-mZ2PlotRange        = [80,0.,120.]
-h4lPlotRange        = [65,70.,200.]
-anglePlotRange      = [50,-3.14,3.14]
+mZ1PlotRange        = [54,42.,72.]
+#mZ2PlotRange        = [88,4.,42.]
+mZ2logx             = array('f', [4.0 * pow(1.026511068,i) for i in range(89)])
+#mZ2logx             = array('f', [4., 10., 40.])
+#mZ2PlotRange        = [20,4.,6.] + [8,6.,7.]+ [7,7.,8.] + [6,8.,9.] + [55,9.,20.] + [30,20.,40.]
+#h4lPlotRange        = [40,80.,100.]
+h4lPlotRange        = [20,130.,200.]
+anglePlotRange      = [25,-3.14,3.14]
 cosThetaPlotRange   = [50,-1.,1.]
 
 deltaRPlotRange3    = [40,0.,0.5]
 deltaRPlotRange2    = [20,0.,2.]
 deltaRPlotRange     = [40,0.,4.]
-hPtPlotRange        = [40,0.,200.]
+hPtPlotRange        = [60,5.,65.]
 
-mu1PtPlotRange      = [20,0.,200.]
-mu2PtPlotRange      = [20,0.,100.]
-mu3PtPlotRange      = [20,0.,100.]
-mu4PtPlotRange      = [20,0.,50.]
+mu1PtPlotRange      = [20,20.,200.]
+#mu1PtPlotRange      = [50,10.,200.]
+mu2PtPlotRange      = [20,10.,100.]
+mu3PtPlotRange      = [20,5.,100.]
+mu4PtPlotRange      = [20,5.,50.]
 
 el1PtPlotRange      = [20,0.,200.]
 el2PtPlotRange      = [20,0.,100.]
@@ -100,14 +106,16 @@ var_mZ1_mZ2_str = "[x.massZ1[0],x.massZ2[0]]"
 var_signal_yield_str = "x.sy"
 # ________________________________________________________________________ ||
 general_4mu_plots = [
+        #Plot("mZ2_4mu",["TH1D","mZ2_4mu","",88,mZ2logx], LambdaFunc('x: '+var_mZ2_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
         Plot("mZ1_4mu",["TH1D","mZ1_4mu","",]+mZ1PlotRange, LambdaFunc('x: '+var_mZ1_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
-        Plot("mZ2_4mu",["TH1D","mZ2_4mu","",]+mZ2PlotRange, LambdaFunc('x: '+var_mZ2_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
+        #Plot("mZ2_4mu",["TH1D","mZ2_4mu","",]+mZ2PlotRange, LambdaFunc('x: '+var_mZ2_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
+        Plot("mZ2_4mu",["TH1D","mZ2_4mu","",88,mZ2logx], LambdaFunc('x: '+var_mZ2_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
         Plot("m4l_4mu",["TH1D","m4l_4mu","",]+h4lPlotRange, LambdaFunc('x: '+var_m4l_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
         Plot("hPt_4mu",["TH1D","hPt_4mu","",]+hPtPlotRange, LambdaFunc('x: '+var_hPt_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
         #Plot("cosThetaStar_4mu",["TH1D","cosThetaStar_4mu","",]+cosThetaPlotRange, LambdaFunc('x: '+var_cosThetaStar_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
         #Plot("cosTheta1_4mu",["TH1D","cosTheta1_4mu","",]+cosThetaPlotRange, LambdaFunc('x: '+var_cosTheta1_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
         #Plot("cosTheta2_4mu",["TH1D","cosTheta2_4mu","",]+cosThetaPlotRange, LambdaFunc('x: '+var_cosTheta2_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
-        #Plot("phi_4mu",["TH1D","phi_4mu","",]+anglePlotRange, LambdaFunc('x: '+var_phi_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
+        Plot("phi_4mu",["TH1D","phi_4mu","",]+anglePlotRange, LambdaFunc('x: '+var_phi_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
         #Plot("phi1_4mu",["TH1D","phi1_4mu","",]+anglePlotRange, LambdaFunc('x: '+var_phi1_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),
         
         #Plot("thetaZ1_4mu",["TH1D","thetaZ1_4mu","",]+hPtPlotRange, LambdaFunc('x: '+var_thetaZ1_str), selFunc=LambdaFunc('x: '+sel_4mu_str)),

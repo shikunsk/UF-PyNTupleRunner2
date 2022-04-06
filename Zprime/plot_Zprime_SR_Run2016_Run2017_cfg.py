@@ -23,7 +23,12 @@ User                    = "kshi"
 #out_path                = "DataMCDistributions/Run2016_Run2017/2020-02-24/"
 #out_path                = "DataMCDistributions/Run2016_Run2017/2020-04-13_4Gev_CR/"
 #out_path                = "DataMCDistributions/Run2016_Run2017/2020-09-23_4Gev_CR/"
-out_path                = "DataMCDistributions/Run2016_Run2017/2020-09-23_4Gev_SR/"
+#out_path                = "DataMCDistributions/Run2016_Run2017/2020-09-23_4Gev_SR/"
+#out_path                = "DataMCDistributions/Run2016_Run2017/2021-10-04_4Gev_CR/"
+#out_path                = "DataMCDistributions/Run2016_Run2017/2021-10-04_4Gev_SR/"
+#out_path                = "DataMCDistributions/Run2016_Run2017/2021-10-23_compare_4Gev_SR/"
+#out_path                = "DataMCDistributions/Run2016_Run2017/Dissertation_ULdata_2022-03-06_4Gev_SR/"
+out_path                = "DataMCDistributions/Run2016_Run2017/Dissertation_ULdata_2022-03-06_4Gev_SR_test/"
 
 #lumi                    = 41.4
 nCores                  = 5
@@ -33,7 +38,7 @@ disableProgressBar      = False
 #componentList           = bkgSamples + [sigSampleDict[m] for m in [10,40,70]]
 #componentList           = bkgSamples + sigSampleDict.values()
 #componentList           = sigSampleDict.values()
-componentList           = bkgSamples + dataSamples# + sigSamples
+componentList           = bkgSamples + dataSamples + sigSamples
 justEndSequence         = False
 
 plots = general_4mu_plots
